@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-class MortgageRateServiceTest {
+class InterestRateServiceTest {
 
     @MockitoBean
     private InterestRateService interestRateService;
