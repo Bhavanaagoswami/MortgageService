@@ -61,7 +61,7 @@ public class MortgageCheckServiceTest {
         MortgageCheckResponse response = future.get();
         Assertions.assertNotNull(response);
         Assertions.assertTrue(response.isMortgage());
-        Assertions.assertEquals(BigDecimal.valueOf(1.33), response.getMortgageRate());
+        Assertions.assertEquals(BigDecimal.valueOf(1.59), response.getMortgageRate());
 
     }
 

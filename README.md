@@ -22,7 +22,7 @@ To build and run the application locally, you will need the following:
 * 
 ### Build
 
-During development, you might find it useful to skip Checkstyle or coverage checks. This can be done using the following
+This can be done using the following:
 Maven commands:
 mvn clean compile
 mvn install
