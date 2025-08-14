@@ -1,0 +1,59 @@
+package com.test.mortgage.service;
+
+import com.test.mortgage.model.MortgageCheckRequest;
+import com.test.mortgage.model.MortgageCheckResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * Service class to calculate the Mortgage rate check.
+ *
+ */
+@Service
+@Slf4j
+public class MortgageCheckService {
+    private final InterestRateService interestRateService;
+    public static final Integer SCALE_TEN = 10;
+    public static final Integer SCALE_TWO = 2;
+    public static final Integer TOTAL_MONTH = 10;
+    public static final Long PERCENT = 100L;
+
+
+    public MortgageCheckService(InterestRateService interestRateService) {
+        this.interestRateService = interestRateService;
+    }
+
+    /**
+     * Async method to handle number of requests.This method calculate mortgage rate.
+     *
+     * @param request MortgageCheckRequest
+     * @return CompletableFuture<MortgageCheckResponse>
+     */
+    @Async
+    public CompletableFuture<MortgageCheckResponse> checkMortgageRate(MortgageCheckRequest request) {
+        boolean feasible = (request.getLoanValue().compareTo(request.getIncome().multiply(BigDecimal.valueOf(4))) <= 0)
+                && (request.getLoanValue().compareTo(request.getHomeValue()) <= 0);
+        BigDecimal monthlyCost = BigDecimal.ZERO;
+        if (feasible) {
+            BigDecimal annualRate = interestRateService
+                    .findInterestRateByMaturityPeriod(request.getMaturityPeriod())
+                    .getInterestRate();
+            if (annualRate != null) {
+                BigDecimal monthlyRate = annualRate.divide(BigDecimal.valueOf(TOTAL_MONTH * PERCENT), SCALE_TEN,
+                        RoundingMode.HALF_UP);
+                int months = request.getMaturityPeriod() * TOTAL_MONTH;
+                BigDecimal numerator = monthlyRate.multiply((BigDecimal.ONE.add(monthlyRate)).pow(months));
+                BigDecimal denominator = (BigDecimal.ONE.add(monthlyRate)).pow(months).subtract(BigDecimal.ONE);
+                monthlyCost = request.getLoanValue().multiply(numerator.divide(denominator,
+                                SCALE_TEN, RoundingMode.HALF_UP))
+                        .setScale(Math.toIntExact(SCALE_TWO), RoundingMode.HALF_UP);
+            }
+        }
+        log.info("feasible: {}, monthlyCost: {}", feasible, monthlyCost);
+        return CompletableFuture.completedFuture(new MortgageCheckResponse(feasible, monthlyCost));
+    }
+}
