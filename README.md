@@ -6,11 +6,17 @@ This application contain the following endpoints.
 
 assumptions: 
 . Saved interestRate or MortgageRates in database. Assuming we will receive this from customer. 
+
 . Mortgage check request is Async for handling load.
+
 . Not added any deployment setup.
+
 . For Database used h2 database that can be changed to Postgres , oracle or any database as per our use case.
+
 . To make production ready , need to add check style , jacoco for code coverage and check in pom xml.
+
 . Assuming mortgage period with will be unique in mortgage_rate table.
+
 . Mapper for request and response object is not included.
 # Local setup
 
