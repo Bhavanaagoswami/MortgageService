@@ -22,7 +22,7 @@ public class ApplicationStartupCheckService {
      */
     public void validateCache() {
         if (interestRateService.isCached() == null) {
-            throw new ApplicationPreCheckFailedException("Btc type out cache not initialized");
+            throw new ApplicationPreCheckFailedException("Cache not initialized");
         }
     }
 }
