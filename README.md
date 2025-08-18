@@ -22,7 +22,7 @@ assumptions:
 
 To build and run the application locally, you will need the following:
 
-* [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+* [JDK 21](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 * [Maven](https://maven.apache.org/download.cgi)
 * H2 in memory database from intellij
 * 
