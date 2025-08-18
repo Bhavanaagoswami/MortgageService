@@ -21,6 +21,7 @@ class InterestRateMapperTest {
     @BeforeEach
     void setup() {
         interestRateEntity = new InterestRateEntity();
+        interestRateEntity.setId(1L);
         interestRateEntity.setInterestRate(BigDecimal.ONE);
         interestRateEntity.setLastUpdated(Timestamp.valueOf("2025-08-08 11:33:33.000"));
         interestRateEntity.setMaturityPeriod(2);

@@ -60,7 +60,7 @@ public class InterestRateService {
                 .stream().map(interestRateMapper::toMortgageRate).toList();
         Objects.requireNonNull(cacheManager.getCache("InterestRateCache"))
                 .put("InterestRateList", interestRates);
-        log.info("InterestRateList size: " + interestRates.size());
+        log.info("InterestRateList size: {}" , interestRates.size());
         return interestRates;
     }
 

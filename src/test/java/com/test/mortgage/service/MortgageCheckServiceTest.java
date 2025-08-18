@@ -43,7 +43,7 @@ public class MortgageCheckServiceTest {
         request = new MortgageCheckRequest(BigDecimal.valueOf(10000), 10,
                 BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0));
         mortgageRate =
-                new MortgageRate(BigDecimal.valueOf(10.1), 10, Timestamp.from(Instant.now()));
+                new MortgageRate(2L, BigDecimal.valueOf(10.1), 10, Timestamp.from(Instant.now()));
         entityRequest = new InterestRateEntity();
         entityRequest.setId(1L);
         entityRequest.setInterestRate(BigDecimal.valueOf(10.1));

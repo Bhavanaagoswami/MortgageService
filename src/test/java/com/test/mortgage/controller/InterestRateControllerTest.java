@@ -29,7 +29,7 @@ class InterestRateControllerTest {
 
     @BeforeEach
     void setUp() {
-        request = new MortgageRate(BigDecimal.valueOf(10.1), 10,
+        request = new MortgageRate(1L, BigDecimal.valueOf(10.1), 10,
                         Timestamp.valueOf("2025-08-14 06:59:17"));
     }
 
@@ -40,7 +40,7 @@ class InterestRateControllerTest {
         when(interestRateService.findAll()).thenReturn(interestRates);
         mockMvc.perform(get("/api/interest-rate"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":null,\"interestRate\":10.1,\"maturityPeriod\":10,\"lastUpdated\":\"2025-08-14T01:29:17.000+00:00\"}]"));
+                .andExpect(content().json("[{\"id\":1,\"interestRate\":10.1,\"maturityPeriod\":10,\"lastUpdated\":\"2025-08-14T01:29:17.000+00:00\"}]"));
     }
 
     @Test
