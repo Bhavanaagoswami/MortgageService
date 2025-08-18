@@ -2,8 +2,10 @@ package com.test.mortgage.onstartup;
 
 import static org.mockito.Mockito.when;
 
+import com.test.mortgage.exception.ApplicationPreCheckFailedException;
 import com.test.mortgage.model.InterestRateEntity;
 import com.test.mortgage.service.InterestRateService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +41,16 @@ class ApplicationStartupCheckServiceTest {
         interestRateEntity.setMaturityPeriod(2);
         interestRateEntity.setLastUpdated(Timestamp.from(Instant.now()));
         applicationStartupCheckService = new ApplicationStartupCheckService(interestRateService);
+    }
+
+    @Test
+    void validateCacheIsFalse() {
+
+        when(interestRateService.isCached()).thenReturn(null);
+        Assertions.assertThrows(ApplicationPreCheckFailedException.class, () -> applicationStartupCheckService.validateCache());
+
+        // test that there was a call
+        Mockito.verify(interestRateService, Mockito.times(1)).isCached();
     }
 
     @Test

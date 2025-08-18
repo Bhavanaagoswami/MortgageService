@@ -10,13 +10,13 @@ import jakarta.validation.constraints.NotNull;
 @Data
 public class MortgageCheckRequest {
 
-    @NotNull
+    @NotNull(message = "Income should not be null")
     private BigDecimal income;
-    @NotNull
+    @NotNull(message = "MaturityPeriod should not be null")
     private Integer maturityPeriod;
-    @NotNull
+    @NotNull (message = "HomeValue should not be null")
     private BigDecimal homeValue;
-    @NotNull
+    @NotNull (message = "LoanValue should not be null")
     private BigDecimal loanValue;
 
     public MortgageCheckRequest(BigDecimal income, Integer maturityPeriod, BigDecimal homeValue, BigDecimal loanValue) {

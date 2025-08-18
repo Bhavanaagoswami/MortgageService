@@ -1,7 +1,10 @@
 package com.test.mortgage.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.mortgage.model.MortgageCheckRequest;
@@ -72,5 +75,18 @@ class MortgageCheckControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
+    @Test
+    public void mortgageCheckTestIfServerError() throws Exception {
+        doThrow(new RuntimeException("Something went wrong")).when(mortgageCheckService).checkMortgageRate(request);
+        RequestBuilder builder = MockMvcRequestBuilders
+                .post("/api/mortgage-check")
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .accept(String.valueOf(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsBytes(request));
+        mockMvc.perform(builder)
+                        .andExpect(status().is5xxServerError()) // Assert HTTP status code
+                .andExpect(jsonPath("$.message").value("Something went wrong")); // Assert error message
     }
 }

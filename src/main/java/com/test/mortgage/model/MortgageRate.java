@@ -1,8 +1,6 @@
 package com.test.mortgage.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -18,7 +16,8 @@ public class MortgageRate {
 
     public MortgageRate() {
     }
-    public MortgageRate(BigDecimal interestRate, Integer maturityPeriod, Timestamp lastUpdated) {
+    public MortgageRate(Long id, BigDecimal interestRate, Integer maturityPeriod, Timestamp lastUpdated) {
+        this.id = id;
         this.interestRate = interestRate;
         this.maturityPeriod = maturityPeriod;
         this.lastUpdated = lastUpdated;

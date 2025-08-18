@@ -44,7 +44,7 @@ public class InterestRateService {
                 interestRateRepository.findByMaturityPeriod(maturityPeriod);
         if (interestRateEntityOptional != null && interestRateEntityOptional.isPresent()) {
             InterestRateEntity interestRateEntity = interestRateEntityOptional.get();
-            mortgageRate = interestRateMapper.toInterestRate(interestRateEntity);
+            mortgageRate = interestRateMapper.toMortgageRate(interestRateEntity);
         }
         return mortgageRate;
     }
@@ -57,10 +57,10 @@ public class InterestRateService {
     public List<MortgageRate> findAll() {
         List<InterestRateEntity> interestRateEntityList = interestRateRepository.findAll();
         List<MortgageRate> interestRates = interestRateEntityList
-                .stream().map(interestRateMapper::toInterestRate).toList();
+                .stream().map(interestRateMapper::toMortgageRate).toList();
         Objects.requireNonNull(cacheManager.getCache("InterestRateCache"))
                 .put("InterestRateList", interestRates);
-        log.info("InterestRateList size: " + interestRates.size());
+        log.info("InterestRateList size: {}" , interestRates.size());
         return interestRates;
     }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -23,9 +24,10 @@ public class InterestRateEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "interestrate")
-    @Min(0)
+    @Min(value = 0, message = "Minimum value is zero for Interest Rate.")
+    @NotNull(message = "Interest Rate can not be null.")
     private BigDecimal interestRate;
-    @Min(0)
+    @Min(value = 0, message = "Minimum value is zero for Maturity Period.")
     @Column(name = "maturityperiod")
     private Integer maturityPeriod;
     @Column(name = "lastupdated")
