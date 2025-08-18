@@ -3,6 +3,8 @@ package com.test.mortgage.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.test.mortgage.exception.MortgageRateNotFound;
+import com.test.mortgage.exception.NotFeasible;
 import com.test.mortgage.mapper.InterestRateMapper;
 import com.test.mortgage.model.InterestRateEntity;
 import com.test.mortgage.model.MortgageCheckRequest;
@@ -30,6 +32,7 @@ public class MortgageCheckServiceTest {
     MortgageCheckRequest request = null;
     MortgageRate mortgageRate = null;
     InterestRateEntity entityRequest = null;
+
     @BeforeEach
     void setUp() {
         CacheManager cacheManager = Mockito.mock(CacheManager.class);
@@ -37,8 +40,8 @@ public class MortgageCheckServiceTest {
         interestRateRepository = Mockito.mock(InterestRateRepository.class);
         interestRateService = new InterestRateService(interestRateRepository, cacheManager, interestRateMapper);
         mortgageCheckService = new MortgageCheckService(interestRateService);
-        request = new MortgageCheckRequest(BigDecimal.valueOf(10000),10,
-                BigDecimal.valueOf(100.0),BigDecimal.valueOf(100.0));
+        request = new MortgageCheckRequest(BigDecimal.valueOf(10000), 10,
+                BigDecimal.valueOf(100.0), BigDecimal.valueOf(100.0));
         mortgageRate =
                 new MortgageRate(BigDecimal.valueOf(10.1), 10, Timestamp.from(Instant.now()));
         entityRequest = new InterestRateEntity();
@@ -48,11 +51,12 @@ public class MortgageCheckServiceTest {
         entityRequest.setLastUpdated(Timestamp.from(Instant.now()));
 
     }
+
     @Test
     public void testMortgageCheck() throws ExecutionException, InterruptedException {
         when(interestRateRepository.findByMaturityPeriod(request.getMaturityPeriod())).
                 thenReturn(Optional.of(entityRequest));
-        when(interestRateMapper.toInterestRate(any())).thenReturn(mortgageRate);
+        when(interestRateMapper.toMortgageRate(any())).thenReturn(mortgageRate);
         when(interestRateService
                 .findInterestRateByMaturityPeriod(request.getMaturityPeriod()))
                 .thenReturn(mortgageRate);
@@ -66,15 +70,19 @@ public class MortgageCheckServiceTest {
     }
 
     @Test
-    public void testMortgageCheckIfNoInterestRateFound() throws ExecutionException, InterruptedException {
+    public void testMortgageCheckIfNoInterestRateFound() {
         when(interestRateRepository.findByMaturityPeriod(request.getMaturityPeriod())).
                 thenReturn(Optional.empty());
         when(interestRateService
                 .findInterestRateByMaturityPeriod(request.getMaturityPeriod()))
                 .thenReturn(any());
+        Assertions.assertThrows(MortgageRateNotFound.class, () -> mortgageCheckService.checkMortgageRate(request));
+    }
 
-        CompletableFuture<MortgageCheckResponse> future = mortgageCheckService.checkMortgageRate(request);
-        MortgageCheckResponse response = future.get();
-        Assertions.assertNotNull(response);
+    @Test
+    public void testMortgageCheckIfNoFeasibility() {
+        request.setMaturityPeriod(3);
+        request.setIncome(BigDecimal.ZERO);
+        Assertions.assertThrows(NotFeasible.class, () -> mortgageCheckService.checkMortgageRate(request));
     }
 }

@@ -1,5 +1,7 @@
 package com.test.mortgage.service;
 
+import com.test.mortgage.exception.MortgageRateNotFound;
+import com.test.mortgage.exception.NotFeasible;
 import com.test.mortgage.model.MortgageCheckRequest;
 import com.test.mortgage.model.MortgageCheckResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +39,7 @@ public class MortgageCheckService {
     public CompletableFuture<MortgageCheckResponse> checkMortgageRate(MortgageCheckRequest request) {
         boolean feasible = (request.getLoanValue().compareTo(request.getIncome().multiply(BigDecimal.valueOf(4))) <= 0)
                 && (request.getLoanValue().compareTo(request.getHomeValue()) <= 0);
-        BigDecimal monthlyCost = BigDecimal.ZERO;
+        BigDecimal monthlyCost;
         if (feasible) {
             BigDecimal annualRate = interestRateService
                     .findInterestRateByMaturityPeriod(request.getMaturityPeriod())
@@ -51,9 +53,17 @@ public class MortgageCheckService {
                 monthlyCost = request.getLoanValue().multiply(numerator.divide(denominator,
                                 SCALE_TEN, RoundingMode.HALF_UP))
                         .setScale(Math.toIntExact(SCALE_TWO), RoundingMode.HALF_UP);
+            } else {
+                log.info("MortgageRate not found in database");
+                throw new MortgageRateNotFound("Mortgage Rate not found in database.");
             }
+        } else {
+            log.info("Mortgage Rate not feasible, Either income is not 4 time then load value \" +\n" +
+                    "                    \"or home value is greater then load value.");
+            throw new NotFeasible("Mortgage Rate not feasible, Either income is not 4 time then load value " +
+                    "or home value is greater then load value.");
         }
-        log.info("feasible: {}, monthlyCost: {}", feasible, monthlyCost);
+
         return CompletableFuture.completedFuture(new MortgageCheckResponse(feasible, monthlyCost));
     }
 }

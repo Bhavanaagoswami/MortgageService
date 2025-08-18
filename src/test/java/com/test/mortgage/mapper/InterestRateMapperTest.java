@@ -27,10 +27,16 @@ class InterestRateMapperTest {
     }
 
     @Test
-    void toCharges() {
-        MortgageRate mortgageRate = commonMapper.toInterestRate(interestRateEntity);
+    void toMortgageRate() {
+        MortgageRate mortgageRate = commonMapper.toMortgageRate(interestRateEntity);
         assertThat(mortgageRate.getInterestRate()).isEqualTo(BigDecimal.ONE);
         assertThat(mortgageRate.getLastUpdated()).isEqualTo(Timestamp.valueOf("2025-08-08 11:33:33.000"));
         assertThat(mortgageRate.getMaturityPeriod()).isEqualTo(2);
+    }
+
+    @Test
+    void toMortgageRateWithNullEntity() {
+        MortgageRate mortgageRate = commonMapper.toMortgageRate(null);
+        assertThat(mortgageRate).isNull();
     }
 }

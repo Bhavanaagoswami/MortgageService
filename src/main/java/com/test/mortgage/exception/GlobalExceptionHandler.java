@@ -38,5 +38,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MortgageRateNotFound.class)
+    public ResponseEntity<Map<String, String>> handlePreCheckExceptions(MortgageRateNotFound ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFeasible.class)
+    public ResponseEntity<Map<String, String>> handlePreCheckExceptions(NotFeasible ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
 
 }

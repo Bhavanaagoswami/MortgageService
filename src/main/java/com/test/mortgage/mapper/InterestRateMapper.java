@@ -9,5 +9,5 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring")
 public interface InterestRateMapper {
-    MortgageRate toInterestRate(InterestRateEntity interestRateEntity);
+    MortgageRate toMortgageRate(InterestRateEntity interestRateEntity);
 }
