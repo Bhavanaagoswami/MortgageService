@@ -3,6 +3,10 @@ package com.test.mortgage.controller;
 import com.test.mortgage.model.MortgageCheckRequest;
 import com.test.mortgage.model.MortgageCheckResponse;
 import com.test.mortgage.service.MortgageCheckService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +18,10 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Mortgage check api controller.
  */
+@Tag(
+        name = "mortgage check REST APIs",
+        description = "To check the valid mortgage using existing interest rate, This Api will return the result."
+)
 @RestController
 @RequestMapping("/api")
 public class MortgageCheckController {
@@ -30,6 +38,18 @@ public class MortgageCheckController {
      * @param request MortgageCheckRequest
      * @return MortgageCheckResponse
      */
+    @Operation(
+            summary = "Create Post API",
+            description = "Post API method to calculate mortgage validity"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "HTTP Status CREATED"
+            )
+    }
+    )
+
     @PostMapping("/mortgage-check")
     public CompletableFuture<ResponseEntity<MortgageCheckResponse>> check(@Valid @RequestBody MortgageCheckRequest request) {
         return mortgageCheckService.checkMortgageRate(request).thenApply(ResponseEntity::ok);
