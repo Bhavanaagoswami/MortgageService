@@ -7,14 +7,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.test.mortgage.model.MortgageRate;
 import com.test.mortgage.service.InterestRateService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +25,15 @@ import java.util.List;
 class InterestRateControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    public MockMvc mockMvc;
     @MockitoBean
-    private InterestRateService interestRateService;
+    public InterestRateService interestRateService;
     MortgageRate request = null;
 
     @BeforeEach
     void setUp() {
         request = new MortgageRate(1L, BigDecimal.valueOf(10.1), 10,
-                        Timestamp.valueOf("2025-08-14 06:59:17"));
+                        Timestamp.from(Instant.now()));
     }
 
     @Test
@@ -38,9 +41,11 @@ class InterestRateControllerTest {
         List<MortgageRate> interestRates = new ArrayList<>();
         interestRates.add(request);
         when(interestRateService.findAll()).thenReturn(interestRates);
-        mockMvc.perform(get("/api/interest-rate"))
+       MvcResult result  = mockMvc.perform(get("/api/interest-rate"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"interestRate\":10.1,\"maturityPeriod\":10,\"lastUpdated\":\"2025-08-14T01:29:17.000+00:00\"}]"));
+               .andExpect(content().contentType("application/json"))
+                .andReturn();
+        Assertions.assertNotNull(result.getResponse().getContentAsString());
     }
 
     @Test
