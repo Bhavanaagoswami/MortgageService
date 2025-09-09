@@ -50,5 +50,27 @@ First, navigate to the `src` directory:
 
 run MortgageServiceApplication using default application.properties.
 
+or
+
+run dockerfile
+
+### Monitoring
+Added actuator api to check the health, metrics and prometheus of the application.
+http://localhost:8086/actuator/health
+http://localhost:8086/actuator/metrics
+http://localhost:8086/actuator/prometheus
+
+### Prometheus and grafana integration
+after running the app in container run:
+docker-compose up -d
+From generated metrics , save some properties in Mortgage-Dashboard.json and import it into grafana UI.
+(I have copied one of the json in repo)
+and open grafana dashboard using http://localhost:3000
+Login admin /admin
+
+upload the json to grafana dashboard .
+
+select prometheus data source.
+
 ### API Documentation 
 http://localhost:8086/v3/api-docs
